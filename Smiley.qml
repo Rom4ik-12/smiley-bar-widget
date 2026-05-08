@@ -16,10 +16,10 @@ Item {
     ]
     
     property var distros: [
-        "", "", "", "", "", "", "", "", "", "", "", "󰙯", 
+        "", "", "", "", "", "", "", "", "", "", "󰙯", 
         "", "󰢮", "", "", "󰖳", "", "", "", "", "", "", "", 
         "", "", "", "", "", "", "", "", "", "", "", "", 
-        "", "", "", "", "", "", "", "", "󰈺"
+        "", "", "", "", "", "", "", "", "󰈺", ""
     ]
 
     property string currentSymbol: ":)"
@@ -53,8 +53,8 @@ Item {
     Popup {
         id: pickerMenu
         padding: 12
-        width: 360
-        height: 280
+        width: 380
+        height: 300
         
         background: Rectangle {
             color: Appearance.colors.colLayer2
@@ -63,32 +63,31 @@ Item {
             border.width: 1
         }
 
-        contentItem: RowLayout {
-            spacing: 12
-            anchors.fill: parent
+        contentItem: Row {
+            spacing: 16
             
-            ColumnLayout {
+            Column {
                 spacing: 8
-                Layout.fillWidth: true
-                Layout.fillHeight: true
+                width: 170
                 
                 StyledText {
+                    width: parent.width
                     text: "эмодзи"
                     font.weight: Font.Bold
                     font.pixelSize: 11
-                    Layout.alignment: Qt.AlignHCenter
+                    horizontalAlignment: Text.AlignHCenter
                     opacity: 0.6
                 }
 
                 ScrollView {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
+                    width: 170
+                    height: 240
                     clip: true
                     contentWidth: flow1.width
 
                     Flow {
                         id: flow1
-                        width: 155
+                        width: 160
                         spacing: 4
                         Repeater {
                             model: root.emojis
@@ -99,34 +98,34 @@ Item {
             }
 
             Rectangle {
-                Layout.fillHeight: true
+                height: parent.height
                 width: 1
                 color: Appearance.colors.colOutlineVariant
                 opacity: 0.2
             }
 
-            ColumnLayout {
+            Column {
                 spacing: 8
-                Layout.fillWidth: true
-                Layout.fillHeight: true
+                width: 170
 
                 StyledText {
+                    width: parent.width
                     text: "системы"
                     font.weight: Font.Bold
                     font.pixelSize: 11
-                    Layout.alignment: Qt.AlignHCenter
+                    horizontalAlignment: Text.AlignHCenter
                     opacity: 0.6
                 }
 
                 ScrollView {
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
+                    width: 170
+                    height: 240
                     clip: true
                     contentWidth: flow2.width
 
                     Flow {
                         id: flow2
-                        width: 155
+                        width: 160
                         spacing: 4
                         Repeater {
                             model: root.distros
@@ -141,8 +140,8 @@ Item {
     Component {
         id: itemDelegate
         MouseArea {
-            width: 34
-            height: 34
+            width: 36
+            height: 36
             hoverEnabled: true
             
             Rectangle {
