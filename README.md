@@ -1,3 +1,5 @@
+[🇷🇺 Русский](README.ru.md) | [🇬🇧 English](README.md)
+
 # Smiley bar widget
 
 A tiny `:)` in the status bar — a minimal example module for the
