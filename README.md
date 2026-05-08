@@ -3,7 +3,7 @@
 A tiny `:)` in the status bar — a minimal example module for the
 [illogical-impulse-plugins](https://github.com/Rom4ik-12/illogical-impulse-plugins) module system.
 
-![smiley in bar](screenshot.png)
+![smiley in bar](screen.jpg)
 
 ## Install
 
