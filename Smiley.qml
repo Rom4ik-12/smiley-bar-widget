@@ -16,8 +16,14 @@ Item {
     readonly property bool optRightClick: cfg.enableRightClick !== false
     readonly property string optSymbol: cfg.currentSymbol || ":)"
 
-    // Определяем основной монитор (обычно самый первый в системе)
-    readonly property bool isPrimary: root.QsWindow.screen === Quickshell.screens[0]
+    // Определяем основной монитор по имени первого в списке
+    readonly property bool isPrimary: {
+        if (!root.QsWindow || !root.QsWindow.screen || Quickshell.screens.length === 0) return true;
+        return root.QsWindow.screen.name === Quickshell.screens[0].name;
+    }
+    
+    // Если дублирование включено — показываем везде.
+    // Если выключено — показываем только на основном.
     readonly property bool shouldShow: optDuplicate || isPrimary
 
     implicitWidth: shouldShow ? label.implicitWidth + 20 : 0
