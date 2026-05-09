@@ -10,17 +10,20 @@ import qs.modules.common.widgets
 Item {
     id: root
     
-    // Настройки из конфига
+    // Настройки из конфига. Проверяем строго на undefined, чтобы "" или false работали корректно.
     readonly property bool optDuplicate: cfg.duplicateOnMonitors !== false
     readonly property bool optLeftClick: cfg.enableLeftClick !== false
     readonly property bool optRightClick: cfg.enableRightClick !== false
-    readonly property string optSymbol: cfg.currentSymbol || ":)"
+    readonly property string optSymbol: cfg.currentSymbol !== undefined ? cfg.currentSymbol : ":)"
 
-    // Определяем, является ли монитор основным (индекс 0 в списке Quickshell)
+    // Определяем, является ли монитор основным.
     readonly property bool isPrimary: {
         if (!root.QsWindow || !root.QsWindow.screen || Quickshell.screens.length === 0) return true;
-        // Сравниваем индекс текущего монитора окна в глобальном списке
-        return Quickshell.screens.indexOf(root.QsWindow.screen) === 0;
+        
+        // Пытаемся найти индекс текущего монитора. 
+        // Если индекс 0 — значит это основной монитор.
+        const screenIndex = Quickshell.screens.indexOf(root.QsWindow.screen);
+        return screenIndex === 0 || screenIndex === -1; // -1 на случай если список еще не прогрузился
     }
     
     // Логика показа
@@ -73,9 +76,9 @@ Item {
         cursorShape: Qt.PointingHandCursor
         z: 999
         
-        // Подсказка для отладки (видна только тебе при наведении)
+        // Подсказка для отладки
         ToolTip.visible: containsMouse
-        ToolTip.text: "Экран: " + (root.QsWindow?.screen?.name || "???") + "\nГлавный: " + isPrimary + "\nДублирование: " + optDuplicate
+        ToolTip.text: "Экран: " + (root.QsWindow?.screen?.name || "???") + "\nИндекс: " + Quickshell.screens.indexOf(root.QsWindow?.screen) + "\nisPrimary: " + isPrimary + "\nshouldShow: " + shouldShow
 
         onClicked: (mouse) => {
             if (mouse.button === Qt.RightButton) {
