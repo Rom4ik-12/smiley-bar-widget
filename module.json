@@ -1,10 +1,10 @@
 {
   "id": "smiley-bar-widget",
-  "name": "Emoji Picker 3.0.1",
+  "name": "Emoji Picker",
   "description": "A bar widget with selectable emojis. Independent per monitor, global via settings.",
-  "version": "3.0.1",
+  "version": "3.0.0",
   "author": "@jettaxp",
-  "link": "https://t.me/jettaxp",
+  "link": "https://jettaxp.github.io",
   "entry": "main.qml",
   "settingsPage": "Settings.qml",
   "barWidgets": [
