@@ -2,8 +2,9 @@
 
 # Smiley bar widget
 
-A tiny `:)` in the status bar — a minimal example module for the
-[illogical-impulse-plugins](https://github.com/Rom4ik-12/illogical-impulse-plugins) module system.
+A bar widget with selectable emojis. Left click to cycle randomly, right click to open the selection menu.
+
+This is a module for the [illogical-impulse-plugins](https://github.com/Rom4ik-12/illogical-impulse-plugins) module system.
 
 ![smiley in bar](screen.jpg)
 

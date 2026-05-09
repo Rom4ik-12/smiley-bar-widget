@@ -2,8 +2,9 @@
 
 # Smiley bar widget
 
-Маленький `:)` в панели задач — минимальный пример модуля для системы
-[illogical-impulse-plugins](https://github.com/Rom4ik-12/illogical-impulse-plugins).
+Виджет для панели с выбором эмодзи. Левый клик — случайный выбор, правый клик — открытие меню выбора.
+
+Это модуль для системы [illogical-impulse-plugins](https://github.com/Rom4ik-12/illogical-impulse-plugins).
 
 ![smiley в баре](screen.jpg)
 

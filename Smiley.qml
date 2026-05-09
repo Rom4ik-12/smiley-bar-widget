@@ -1,6 +1,8 @@
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
+import Quickshell
+import Quickshell.Wayland
 import qs.modules.common
 import qs.modules.common.widgets
 
@@ -41,95 +43,102 @@ Item {
 
         onClicked: (mouse) => {
             if (mouse.button === Qt.RightButton) {
-                pickerMenu.x = -pickerMenu.width / 2 + root.width / 2
-                pickerMenu.y = root.height + 5
-                pickerMenu.open()
+                pickerMenu.visible = !pickerMenu.visible
             } else {
                 root.currentSymbol = root.emojis[Math.floor(Math.random() * root.emojis.length)]
             }
         }
     }
 
-    Popup {
+    PopupWindow {
         id: pickerMenu
-        padding: 12
+        visible: false
         width: 380
         height: 300
-        
-        background: Rectangle {
+        color: "transparent"
+
+        anchor {
+            item: root
+            gravity: Config.options.bar.bottom ? Edges.Top : Edges.Bottom
+        }
+
+        Rectangle {
+            anchors.fill: parent
             color: Appearance.colors.colLayer2
             radius: Appearance.rounding.medium
             border.color: Appearance.colors.colOutlineVariant
             border.width: 1
-        }
 
-        contentItem: Row {
-            spacing: 16
-            
-            Column {
-                spacing: 8
-                width: 170
+            Row {
+                anchors.fill: parent
+                anchors.margins: 12
+                spacing: 16
                 
-                StyledText {
-                    width: parent.width
-                    text: "эмодзи"
-                    font.weight: Font.Bold
-                    font.pixelSize: 11
-                    horizontalAlignment: Text.AlignHCenter
-                    opacity: 0.6
-                }
-
-                ScrollView {
+                Column {
+                    spacing: 8
                     width: 170
-                    height: 240
-                    clip: true
-                    contentWidth: flow1.width
+                    
+                    StyledText {
+                        width: parent.width
+                        text: "эмодзи"
+                        font.weight: Font.Bold
+                        font.pixelSize: 11
+                        horizontalAlignment: Text.AlignHCenter
+                        opacity: 0.6
+                    }
 
-                    Flow {
-                        id: flow1
-                        width: 160
-                        spacing: 4
-                        Repeater {
-                            model: root.emojis
-                            delegate: itemDelegate
+                    ScrollView {
+                        width: 170
+                        height: 240
+                        clip: true
+                        contentWidth: flow1.width
+
+                        Flow {
+                            id: flow1
+                            width: 160
+                            spacing: 4
+                            Repeater {
+                                model: root.emojis
+                                delegate: itemDelegate
+                            }
                         }
                     }
                 }
-            }
 
-            Rectangle {
-                height: parent.height
-                width: 1
-                color: Appearance.colors.colOutlineVariant
-                opacity: 0.2
-            }
-
-            Column {
-                spacing: 8
-                width: 170
-
-                StyledText {
-                    width: parent.width
-                    text: "системы"
-                    font.weight: Font.Bold
-                    font.pixelSize: 11
-                    horizontalAlignment: Text.AlignHCenter
-                    opacity: 0.6
+                Rectangle {
+                    height: parent.height
+                    width: 1
+                    color: Appearance.colors.colOutlineVariant
+                    opacity: 0.2
                 }
 
-                ScrollView {
+                Column {
+                    spacing: 8
                     width: 170
-                    height: 240
-                    clip: true
-                    contentWidth: flow2.width
 
-                    Flow {
-                        id: flow2
-                        width: 160
-                        spacing: 4
-                        Repeater {
-                            model: root.distros
-                            delegate: itemDelegate
+                    StyledText {
+                        width: parent.width
+                        text: "системы"
+                        font.weight: Font.Bold
+                        font.pixelSize: 11
+                        horizontalAlignment: Text.AlignHCenter
+                        opacity: 0.6
+                    }
+
+                    ScrollView {
+                        width: 170
+                        height: 240
+                        clip: true
+                        contentWidth: flow2.width
+
+                        Flow {
+                            id: flow2
+                            width: 160
+                            spacing: 4
+                            Repeater {
+                                model: root.distros
+                                delegate: itemDelegate
+                            }
                         }
                     }
                 }
@@ -159,7 +168,7 @@ Item {
 
             onClicked: {
                 root.currentSymbol = modelData
-                pickerMenu.close()
+                pickerMenu.visible = false
             }
         }
     }
