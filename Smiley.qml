@@ -3,13 +3,31 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Wayland
+import Quickshell.Io
 import qs.modules.common
 import qs.modules.common.widgets
 
 Item {
     id: root
-    implicitWidth: label.implicitWidth + 20
+    implicitWidth: (getConfig().duplicateOnMonitors ?? true) || (root.QsWindow.screen.name === "eDP-1") ? label.implicitWidth + 20 : 0
+    visible: (getConfig().duplicateOnMonitors ?? true) || (root.QsWindow.screen.name === "eDP-1")
     implicitHeight: 40
+
+    FileView {
+        id: cfg
+        path: Directories.state + "/user/emoji-picker/config.json"
+        watchChanges: true
+    }
+
+    function getConfig() {
+        return JSON.parse(cfg.text || "{}");
+    }
+
+    function updateConfig(key, value) {
+        const c = getConfig();
+        c[key] = value;
+        cfg.setText(JSON.stringify(c, null, 2));
+    }
 
     property var emojis: [
         ":)", ":/", ">.<", ">-<", ">_<", ":D", ":(", "O_o", "B-)", "^_^",
@@ -24,7 +42,17 @@ Item {
         "", "", "", "", "", "", "", "", "󰈺", ""
     ]
 
-    property string currentSymbol: ":)"
+    property string currentSymbol: getConfig().currentSymbol ?? ":)"
+    
+    Connections {
+        target: cfg
+        function onTextChanged() {
+            const config = getConfig();
+            if (config.duplicateOnMonitors ?? true) {
+                root.currentSymbol = config.currentSymbol ?? ":)";
+            }
+        }
+    }
 
     StyledText {
         id: label
@@ -42,10 +70,20 @@ Item {
         z: 999
 
         onClicked: (mouse) => {
+            const config = getConfig();
             if (mouse.button === Qt.RightButton) {
-                pickerMenu.visible = !pickerMenu.visible
+                if (config.enableRightClick ?? true) {
+                    pickerMenu.visible = !pickerMenu.visible
+                }
             } else {
-                root.currentSymbol = root.emojis[Math.floor(Math.random() * root.emojis.length)]
+                if (config.enableLeftClick ?? true) {
+                    const next = root.emojis[Math.floor(Math.random() * root.emojis.length)];
+                    if (config.duplicateOnMonitors ?? true) {
+                        updateConfig("currentSymbol", next);
+                    } else {
+                        root.currentSymbol = next;
+                    }
+                }
             }
         }
     }
@@ -167,7 +205,11 @@ Item {
             }
 
             onClicked: {
-                root.currentSymbol = modelData
+                if (getConfig().duplicateOnMonitors ?? true) {
+                    updateConfig("currentSymbol", modelData);
+                } else {
+                    root.currentSymbol = modelData;
+                }
                 pickerMenu.visible = false
             }
         }

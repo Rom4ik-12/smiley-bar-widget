@@ -5,6 +5,7 @@
   "version": "1.2.0",
   "author": "@jettaxp",
   "entry": "main.qml",
+  "settingsPage": "Settings.qml",
   "barWidgets": [
     { "source": "Smiley.qml" }
   ]
