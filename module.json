@@ -1,10 +1,10 @@
 {
   "id": "smiley-bar-widget",
-  "name": "Emoji Picker 3.0.0",
-  "description": "A bar widget with selectable emojis. Separate symbols per monitor.",
-  "version": "3.0.0",
+  "name": "Emoji Picker 3.0.1",
+  "description": "A bar widget with selectable emojis. Independent per monitor, global via settings.",
+  "version": "3.0.1",
   "author": "@jettaxp",
-  "link": "https://github.com/Rom4ik-12/smiley-bar-widget",
+  "link": "https://t.me/jettaxp",
   "entry": "main.qml",
   "settingsPage": "Settings.qml",
   "barWidgets": [

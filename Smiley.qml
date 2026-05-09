@@ -10,8 +10,8 @@ import qs.modules.common.widgets
 Item {
     id: root
     
-    // Символ теперь локальный для каждого монитора
-    property string currentSymbol: ":)"
+    // Локальное состояние для этого экземпляра виджета
+    property string currentSymbol: cfg.currentSymbol !== undefined ? cfg.currentSymbol : ":)"
 
     implicitWidth: label.implicitWidth + 20
     implicitHeight: 40
@@ -24,8 +24,19 @@ Item {
         
         JsonAdapter {
             id: cfg
+            property var currentSymbol
             property bool enableLeftClick: true
             property bool enableRightClick: true
+        }
+    }
+    
+    // Если символ изменили в настройках (глобально), обновляем локальный символ везде
+    Connections {
+        target: cfg
+        function onCurrentSymbolChanged() {
+            if (cfg.currentSymbol !== undefined) {
+                root.currentSymbol = cfg.currentSymbol;
+            }
         }
     }
 
@@ -64,6 +75,7 @@ Item {
                 }
             } else {
                 if (cfg.enableLeftClick) {
+                    // Клик меняет символ ТОЛЬКО локально на этом мониторе
                     root.currentSymbol = root.emojis[Math.floor(Math.random() * root.emojis.length)];
                 }
             }
@@ -187,6 +199,7 @@ Item {
             }
 
             onClicked: {
+                // Выбор в меню меняет символ ТОЛЬКО локально
                 root.currentSymbol = modelData;
                 pickerMenu.visible = false
             }
