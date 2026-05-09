@@ -10,27 +10,19 @@ import qs.modules.common.widgets
 Item {
     id: root
     
-    // Настройки из конфига. Проверяем строго на undefined, чтобы "" или false работали корректно.
+    // Внутреннее состояние для независимой работы на разных мониторах
+    property string localSymbol: cfg.currentSymbol !== undefined ? cfg.currentSymbol : ":)"
+    
+    // Настройки из конфига
     readonly property bool optDuplicate: cfg.duplicateOnMonitors !== false
     readonly property bool optLeftClick: cfg.enableLeftClick !== false
     readonly property bool optRightClick: cfg.enableRightClick !== false
-    readonly property string optSymbol: cfg.currentSymbol !== undefined ? cfg.currentSymbol : ":)"
 
-    // Определяем, является ли монитор основным.
-    readonly property bool isPrimary: {
-        if (!root.QsWindow || !root.QsWindow.screen || Quickshell.screens.length === 0) return true;
-        
-        // Пытаемся найти индекс текущего монитора. 
-        // Если индекс 0 — значит это основной монитор.
-        const screenIndex = Quickshell.screens.indexOf(root.QsWindow.screen);
-        return screenIndex === 0 || screenIndex === -1; // -1 на случай если список еще не прогрузился
-    }
-    
-    // Логика показа
-    readonly property bool shouldShow: optDuplicate || isPrimary
+    // Текст, который реально отображается
+    readonly property string displaySymbol: optDuplicate ? (cfg.currentSymbol !== undefined ? cfg.currentSymbol : ":)") : localSymbol
 
-    implicitWidth: shouldShow ? label.implicitWidth + 20 : 0
-    visible: shouldShow
+    // Виджет всегда виден на всех мониторах
+    implicitWidth: label.implicitWidth + 20
     implicitHeight: 40
 
     FileView {
@@ -45,6 +37,16 @@ Item {
             property var duplicateOnMonitors
             property var enableLeftClick
             property var enableRightClick
+        }
+    }
+    
+    // Синхронизируем локальный символ, если настройки были изменены в GUI
+    Connections {
+        target: cfg
+        function onCurrentSymbolChanged() {
+            if (!optDuplicate) {
+                root.localSymbol = cfg.currentSymbol;
+            }
         }
     }
 
@@ -64,7 +66,7 @@ Item {
     StyledText {
         id: label
         anchors.centerIn: parent
-        text: root.optSymbol
+        text: root.displaySymbol
         font.pixelSize: Appearance.font.pixelSize.normal
         color: Appearance.colors.colOnSurface
     }
@@ -75,10 +77,6 @@ Item {
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         z: 999
-        
-        // Подсказка для отладки
-        ToolTip.visible: containsMouse
-        ToolTip.text: "Экран: " + (root.QsWindow?.screen?.name || "???") + "\nИндекс: " + Quickshell.screens.indexOf(root.QsWindow?.screen) + "\nisPrimary: " + isPrimary + "\nshouldShow: " + shouldShow
 
         onClicked: (mouse) => {
             if (mouse.button === Qt.RightButton) {
@@ -88,8 +86,12 @@ Item {
             } else {
                 if (root.optLeftClick) {
                     const next = root.emojis[Math.floor(Math.random() * root.emojis.length)];
-                    cfg.currentSymbol = next;
-                    cfgFile.writeAdapter();
+                    if (root.optDuplicate) {
+                        cfg.currentSymbol = next;
+                        cfgFile.writeAdapter();
+                    } else {
+                        root.localSymbol = next;
+                    }
                 }
             }
         }
@@ -212,8 +214,12 @@ Item {
             }
 
             onClicked: {
-                cfg.currentSymbol = modelData;
-                cfgFile.writeAdapter();
+                if (root.optDuplicate) {
+                    cfg.currentSymbol = modelData;
+                    cfgFile.writeAdapter();
+                } else {
+                    root.localSymbol = modelData;
+                }
                 pickerMenu.visible = false
             }
         }
