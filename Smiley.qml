@@ -16,14 +16,17 @@ Item {
     readonly property bool optRightClick: cfg.enableRightClick !== false
     readonly property string optSymbol: cfg.currentSymbol || ":)"
 
-    // Определяем основной монитор по имени первого в списке
+    // Определяем, является ли этот монитор основным.
+    // Если Quickshell еще не загрузил список мониторов, считаем что мы на основном (чтобы не пропадало).
     readonly property bool isPrimary: {
         if (!root.QsWindow || !root.QsWindow.screen || Quickshell.screens.length === 0) return true;
-        return root.QsWindow.screen.name === Quickshell.screens[0].name;
+        
+        // Сравниваем объект текущего монитора с первым монитором в глобальном списке Quickshell.
+        // Это самый надежный способ, работающий на eDP, DP и HDMI.
+        return root.QsWindow.screen === Quickshell.screens[0];
     }
     
-    // Если дублирование включено — показываем везде.
-    // Если выключено — показываем только на основном.
+    // Показываем, если включено дублирование ИЛИ это основной монитор.
     readonly property bool shouldShow: optDuplicate || isPrimary
 
     implicitWidth: shouldShow ? label.implicitWidth + 20 : 0
