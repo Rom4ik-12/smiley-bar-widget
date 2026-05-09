@@ -10,14 +10,18 @@ import qs.modules.common.widgets
 Item {
     id: root
     
-    // Биндинги настроек для надежности
-    readonly property bool optDuplicate: cfg.duplicateOnMonitors
-    readonly property bool optLeftClick: cfg.enableLeftClick
-    readonly property bool optRightClick: cfg.enableRightClick
-    readonly property string optSymbol: cfg.currentSymbol
+    // Биндинги настроек с жесткими дефолтами на случай отсутствия конфига
+    readonly property bool optDuplicate: cfg.duplicateOnMonitors !== false // default true
+    readonly property bool optLeftClick: cfg.enableLeftClick !== false // default true
+    readonly property bool optRightClick: cfg.enableRightClick !== false // default true
+    readonly property string optSymbol: cfg.currentSymbol || ":)"
 
-    implicitWidth: optDuplicate || (root.QsWindow.screen.name === "eDP-1") ? label.implicitWidth + 20 : 0
-    visible: optDuplicate || (root.QsWindow.screen.name === "eDP-1")
+    // Управление видимостью
+    property bool isPrimary: root.QsWindow.screen.name === "eDP-1"
+    property bool shouldShow: optDuplicate || isPrimary
+
+    implicitWidth: shouldShow ? label.implicitWidth + 20 : 0
+    visible: shouldShow
     implicitHeight: 40
 
     FileView {
@@ -28,10 +32,10 @@ Item {
         
         JsonAdapter {
             id: cfg
-            property string currentSymbol: ":)"
-            property bool duplicateOnMonitors: true
-            property bool enableLeftClick: true
-            property bool enableRightClick: true
+            property var currentSymbol
+            property var duplicateOnMonitors
+            property var enableLeftClick
+            property var enableRightClick
         }
     }
 

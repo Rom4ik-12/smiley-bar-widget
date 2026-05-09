@@ -12,7 +12,8 @@ ColumnLayout {
 
     FileView {
         id: cfgFile
-        path: moduleDataDir + "/config.json"
+        // Используем явный путь для синхронизации с виджетом
+        path: Directories.state + "/smiley-bar-widget/config.json"
         watchChanges: true
         onFileChanged: reload()
         onAdapterUpdated: cfgFile.writeAdapter()
@@ -20,7 +21,7 @@ ColumnLayout {
         
         JsonAdapter {
             id: cfg
-            property string currentSymbol: ":)"
+            property bool currentSymbol: ":)"
             property bool duplicateOnMonitors: true
             property bool enableLeftClick: true
             property bool enableRightClick: true
