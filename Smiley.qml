@@ -15,7 +15,7 @@ Item {
 
     FileView {
         id: cfgFile
-        path: Directories.state + "/user/smiley-bar-widget/config.json"
+        path: Directories.state + "/smiley-bar-widget/config.json"
         watchChanges: true
         onFileChanged: reload()
         
