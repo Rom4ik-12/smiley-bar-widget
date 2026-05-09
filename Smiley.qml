@@ -10,18 +10,9 @@ import qs.modules.common.widgets
 Item {
     id: root
     
-    // Внутреннее состояние для независимой работы на разных мониторах
-    property string localSymbol: cfg.currentSymbol !== undefined ? cfg.currentSymbol : ":)"
-    
-    // Настройки из конфига
-    readonly property bool optDuplicate: cfg.duplicateOnMonitors !== false
-    readonly property bool optLeftClick: cfg.enableLeftClick !== false
-    readonly property bool optRightClick: cfg.enableRightClick !== false
+    // Символ теперь локальный для каждого монитора
+    property string currentSymbol: ":)"
 
-    // Текст, который реально отображается
-    readonly property string displaySymbol: optDuplicate ? (cfg.currentSymbol !== undefined ? cfg.currentSymbol : ":)") : localSymbol
-
-    // Виджет всегда виден на всех мониторах
     implicitWidth: label.implicitWidth + 20
     implicitHeight: 40
 
@@ -33,20 +24,8 @@ Item {
         
         JsonAdapter {
             id: cfg
-            property var currentSymbol
-            property var duplicateOnMonitors
-            property var enableLeftClick
-            property var enableRightClick
-        }
-    }
-    
-    // Синхронизируем локальный символ, если настройки были изменены в GUI
-    Connections {
-        target: cfg
-        function onCurrentSymbolChanged() {
-            if (!optDuplicate) {
-                root.localSymbol = cfg.currentSymbol;
-            }
+            property bool enableLeftClick: true
+            property bool enableRightClick: true
         }
     }
 
@@ -66,7 +45,7 @@ Item {
     StyledText {
         id: label
         anchors.centerIn: parent
-        text: root.displaySymbol
+        text: root.currentSymbol
         font.pixelSize: Appearance.font.pixelSize.normal
         color: Appearance.colors.colOnSurface
     }
@@ -80,18 +59,12 @@ Item {
 
         onClicked: (mouse) => {
             if (mouse.button === Qt.RightButton) {
-                if (root.optRightClick) {
+                if (cfg.enableRightClick) {
                     pickerMenu.visible = !pickerMenu.visible
                 }
             } else {
-                if (root.optLeftClick) {
-                    const next = root.emojis[Math.floor(Math.random() * root.emojis.length)];
-                    if (root.optDuplicate) {
-                        cfg.currentSymbol = next;
-                        cfgFile.writeAdapter();
-                    } else {
-                        root.localSymbol = next;
-                    }
+                if (cfg.enableLeftClick) {
+                    root.currentSymbol = root.emojis[Math.floor(Math.random() * root.emojis.length)];
                 }
             }
         }
@@ -214,12 +187,7 @@ Item {
             }
 
             onClicked: {
-                if (root.optDuplicate) {
-                    cfg.currentSymbol = modelData;
-                    cfgFile.writeAdapter();
-                } else {
-                    root.localSymbol = modelData;
-                }
+                root.currentSymbol = modelData;
                 pickerMenu.visible = false
             }
         }

@@ -21,31 +21,9 @@ ColumnLayout {
         
         JsonAdapter {
             id: cfg
-            property string currentSymbol: ":)"
-            property bool duplicateOnMonitors: true
             property bool enableLeftClick: true
             property bool enableRightClick: true
         }
-    }
-
-    ConfigRow {
-        Layout.fillWidth: true
-        StyledText {
-            text: "Текущий символ"
-            Layout.fillWidth: true
-        }
-        MaterialTextArea {
-            implicitWidth: 160
-            wrapMode: TextEdit.NoWrap
-            text: cfg.currentSymbol
-            onTextChanged: if (text !== cfg.currentSymbol) cfg.currentSymbol = text
-        }
-    }
-
-    ConfigSwitch {
-        text: "Дублировать на все мониторы"
-        checked: cfg.duplicateOnMonitors
-        onCheckedChanged: cfg.duplicateOnMonitors = checked
     }
 
     ConfigSwitch {
