@@ -2,12 +2,18 @@
   "id": "smiley-bar-widget",
   "name": "Emoji Picker",
   "description": "A bar widget with selectable emojis. Independent per monitor, global via settings.",
-  "version": "3.0.0",
+  "version": "3.1.0",
+  "requiresLoader": "1.4",
   "author": "@jettaxp",
-  "link": "https://jettaxp.github.io",
+  "link": "https://github.com/Rom4ik-12/smiley-bar-widget",
+  "updateUrl": "https://github.com/Rom4ik-12/smiley-bar-widget/releases/latest/download/smiley-bar-widget.qsmod",
   "entry": "main.qml",
   "settingsPage": "Settings.qml",
   "barWidgets": [
     { "source": "Smiley.qml" }
+  ],
+  "changelog": [
+    "Settings page restored: live symbol field, left/right-click toggles",
+    "Manifest declares requiresLoader 1.4 for the new compatibility checks"
   ]
 }
