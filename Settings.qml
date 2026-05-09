@@ -8,6 +8,7 @@ ColumnLayout {
     property string moduleDataDir
     property string moduleId
 
+    Layout.fillWidth: true
     spacing: 8
 
     FileView {
@@ -17,16 +18,26 @@ ColumnLayout {
     }
 
     function updateConfig(key, value) {
-        const c = JSON.parse(cfg.text || "{}");
+        let c;
+        try {
+            c = JSON.parse(cfg.text || "{}");
+        } catch(e) {
+            c = {};
+        }
         c[key] = value;
         cfg.setText(JSON.stringify(c, null, 2));
     }
 
     function getConfig() {
-        return JSON.parse(cfg.text || "{}");
+        try {
+            return JSON.parse(cfg.text || "{}");
+        } catch(e) {
+            return {};
+        }
     }
 
     ConfigRow {
+        Layout.fillWidth: true
         label: "Дублировать на все мониторы"
         StyledSwitch {
             checked: getConfig().duplicateOnMonitors ?? true
@@ -35,6 +46,7 @@ ColumnLayout {
     }
 
     ConfigRow {
+        Layout.fillWidth: true
         label: "Рандом при левом клике"
         StyledSwitch {
             checked: getConfig().enableLeftClick ?? true
@@ -43,6 +55,7 @@ ColumnLayout {
     }
 
     ConfigRow {
+        Layout.fillWidth: true
         label: "Меню при правом клике"
         StyledSwitch {
             checked: getConfig().enableRightClick ?? true
@@ -51,6 +64,7 @@ ColumnLayout {
     }
 
     ConfigRow {
+        Layout.fillWidth: true
         label: "Текущий символ"
         StyledTextField {
             text: getConfig().currentSymbol ?? ":)"

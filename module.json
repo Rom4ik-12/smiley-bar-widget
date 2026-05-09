@@ -1,5 +1,5 @@
 {
-  "id": "emoji-picker",
+  "id": "smiley-bar-widget",
   "name": "Emoji Picker",
   "description": "A bar widget with selectable emojis. Left click to cycle, right click for menu.",
   "version": "1.2.0",

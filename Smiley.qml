@@ -15,7 +15,7 @@ Item {
 
     FileView {
         id: cfg
-        path: Directories.state + "/user/emoji-picker/config.json"
+        path: Directories.state + "/user/smiley-bar-widget/config.json"
         watchChanges: true
     }
 
