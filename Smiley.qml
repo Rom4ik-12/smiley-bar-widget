@@ -10,23 +10,20 @@ import qs.modules.common.widgets
 Item {
     id: root
     
-    // Биндинги настроек
+    // Настройки из конфига
     readonly property bool optDuplicate: cfg.duplicateOnMonitors !== false
     readonly property bool optLeftClick: cfg.enableLeftClick !== false
     readonly property bool optRightClick: cfg.enableRightClick !== false
     readonly property string optSymbol: cfg.currentSymbol || ":)"
 
-    // Определяем, является ли этот монитор основным.
-    // Если Quickshell еще не загрузил список мониторов, считаем что мы на основном (чтобы не пропадало).
+    // Определяем, является ли монитор основным (индекс 0 в списке Quickshell)
     readonly property bool isPrimary: {
         if (!root.QsWindow || !root.QsWindow.screen || Quickshell.screens.length === 0) return true;
-        
-        // Сравниваем объект текущего монитора с первым монитором в глобальном списке Quickshell.
-        // Это самый надежный способ, работающий на eDP, DP и HDMI.
-        return root.QsWindow.screen === Quickshell.screens[0];
+        // Сравниваем индекс текущего монитора окна в глобальном списке
+        return Quickshell.screens.indexOf(root.QsWindow.screen) === 0;
     }
     
-    // Показываем, если включено дублирование ИЛИ это основной монитор.
+    // Логика показа
     readonly property bool shouldShow: optDuplicate || isPrimary
 
     implicitWidth: shouldShow ? label.implicitWidth + 20 : 0
@@ -75,6 +72,10 @@ Item {
         hoverEnabled: true
         cursorShape: Qt.PointingHandCursor
         z: 999
+        
+        // Подсказка для отладки (видна только тебе при наведении)
+        ToolTip.visible: containsMouse
+        ToolTip.text: "Экран: " + (root.QsWindow?.screen?.name || "???") + "\nГлавный: " + isPrimary + "\nДублирование: " + optDuplicate
 
         onClicked: (mouse) => {
             if (mouse.button === Qt.RightButton) {
