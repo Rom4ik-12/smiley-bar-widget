@@ -10,15 +10,15 @@ import qs.modules.common.widgets
 Item {
     id: root
     
-    // Биндинги настроек с жесткими дефолтами на случай отсутствия конфига
-    readonly property bool optDuplicate: cfg.duplicateOnMonitors !== false // default true
-    readonly property bool optLeftClick: cfg.enableLeftClick !== false // default true
-    readonly property bool optRightClick: cfg.enableRightClick !== false // default true
+    // Биндинги настроек
+    readonly property bool optDuplicate: cfg.duplicateOnMonitors !== false
+    readonly property bool optLeftClick: cfg.enableLeftClick !== false
+    readonly property bool optRightClick: cfg.enableRightClick !== false
     readonly property string optSymbol: cfg.currentSymbol || ":)"
 
-    // Управление видимостью
-    property bool isPrimary: root.QsWindow.screen.name === "eDP-1"
-    property bool shouldShow: optDuplicate || isPrimary
+    // Определяем основной монитор (обычно самый первый в системе)
+    readonly property bool isPrimary: root.QsWindow.screen === Quickshell.screens[0]
+    readonly property bool shouldShow: optDuplicate || isPrimary
 
     implicitWidth: shouldShow ? label.implicitWidth + 20 : 0
     visible: shouldShow
