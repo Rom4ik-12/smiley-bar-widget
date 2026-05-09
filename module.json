@@ -2,7 +2,7 @@
   "id": "smiley-bar-widget",
   "name": "Emoji Picker",
   "description": "A bar widget with selectable emojis. Left click to cycle, right click for menu.",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "author": "@jettaxp",
   "entry": "main.qml",
   "settingsPage": "Settings.qml",

@@ -9,8 +9,15 @@ import qs.modules.common.widgets
 
 Item {
     id: root
-    implicitWidth: cfg.duplicateOnMonitors || (root.QsWindow.screen.name === "eDP-1") ? label.implicitWidth + 20 : 0
-    visible: cfg.duplicateOnMonitors || (root.QsWindow.screen.name === "eDP-1")
+    
+    // Биндинги настроек для надежности
+    readonly property bool optDuplicate: cfg.duplicateOnMonitors
+    readonly property bool optLeftClick: cfg.enableLeftClick
+    readonly property bool optRightClick: cfg.enableRightClick
+    readonly property string optSymbol: cfg.currentSymbol
+
+    implicitWidth: optDuplicate || (root.QsWindow.screen.name === "eDP-1") ? label.implicitWidth + 20 : 0
+    visible: optDuplicate || (root.QsWindow.screen.name === "eDP-1")
     implicitHeight: 40
 
     FileView {
@@ -44,7 +51,7 @@ Item {
     StyledText {
         id: label
         anchors.centerIn: parent
-        text: cfg.currentSymbol
+        text: root.optSymbol
         font.pixelSize: Appearance.font.pixelSize.normal
         color: Appearance.colors.colOnSurface
     }
@@ -58,11 +65,11 @@ Item {
 
         onClicked: (mouse) => {
             if (mouse.button === Qt.RightButton) {
-                if (cfg.enableRightClick) {
+                if (root.optRightClick) {
                     pickerMenu.visible = !pickerMenu.visible
                 }
             } else {
-                if (cfg.enableLeftClick) {
+                if (root.optLeftClick) {
                     const next = root.emojis[Math.floor(Math.random() * root.emojis.length)];
                     cfg.currentSymbol = next;
                     cfgFile.writeAdapter();
