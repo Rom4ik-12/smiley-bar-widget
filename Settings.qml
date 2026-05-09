@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import Quickshell
 import Quickshell.Io
 import qs.modules.common
 import qs.modules.common.widgets
@@ -12,7 +13,6 @@ ColumnLayout {
 
     FileView {
         id: cfgFile
-        // Используем явный путь для синхронизации с виджетом
         path: Directories.state + "/smiley-bar-widget/config.json"
         watchChanges: true
         onFileChanged: reload()
@@ -21,7 +21,7 @@ ColumnLayout {
         
         JsonAdapter {
             id: cfg
-            property bool currentSymbol: ":)"
+            property string currentSymbol: ":)"
             property bool duplicateOnMonitors: true
             property bool enableLeftClick: true
             property bool enableRightClick: true
