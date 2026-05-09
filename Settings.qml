@@ -8,67 +8,54 @@ ColumnLayout {
     property string moduleDataDir
     property string moduleId
 
-    Layout.fillWidth: true
-    spacing: 8
+    spacing: 0
 
     FileView {
-        id: cfg
+        id: cfgFile
         path: moduleDataDir + "/config.json"
         watchChanges: true
-    }
-
-    function updateConfig(key, value) {
-        let c;
-        try {
-            c = JSON.parse(cfg.text || "{}");
-        } catch(e) {
-            c = {};
-        }
-        c[key] = value;
-        cfg.setText(JSON.stringify(c, null, 2));
-    }
-
-    function getConfig() {
-        try {
-            return JSON.parse(cfg.text || "{}");
-        } catch(e) {
-            return {};
+        onFileChanged: reload()
+        onAdapterUpdated: cfgFile.writeAdapter()
+        onLoadFailed: cfgFile.writeAdapter()
+        
+        JsonAdapter {
+            id: cfg
+            property string currentSymbol: ":)"
+            property bool duplicateOnMonitors: true
+            property bool enableLeftClick: true
+            property bool enableRightClick: true
         }
     }
 
     ConfigRow {
         Layout.fillWidth: true
-        label: "Дублировать на все мониторы"
-        StyledSwitch {
-            checked: getConfig().duplicateOnMonitors ?? true
-            onClicked: updateConfig("duplicateOnMonitors", !checked)
+        StyledText {
+            text: "Текущий символ"
+            Layout.fillWidth: true
+        }
+        MaterialTextArea {
+            implicitWidth: 160
+            wrapMode: TextEdit.NoWrap
+            text: cfg.currentSymbol
+            onTextChanged: if (text !== cfg.currentSymbol) cfg.currentSymbol = text
         }
     }
 
-    ConfigRow {
-        Layout.fillWidth: true
-        label: "Рандом при левом клике"
-        StyledSwitch {
-            checked: getConfig().enableLeftClick ?? true
-            onClicked: updateConfig("enableLeftClick", !checked)
-        }
+    ConfigSwitch {
+        text: "Дублировать на все мониторы"
+        checked: cfg.duplicateOnMonitors
+        onCheckedChanged: cfg.duplicateOnMonitors = checked
     }
 
-    ConfigRow {
-        Layout.fillWidth: true
-        label: "Меню при правом клике"
-        StyledSwitch {
-            checked: getConfig().enableRightClick ?? true
-            onClicked: updateConfig("enableRightClick", !checked)
-        }
+    ConfigSwitch {
+        text: "Рандом при левом клике"
+        checked: cfg.enableLeftClick
+        onCheckedChanged: cfg.enableLeftClick = checked
     }
 
-    ConfigRow {
-        Layout.fillWidth: true
-        label: "Текущий символ"
-        StyledTextField {
-            text: getConfig().currentSymbol ?? ":)"
-            onEditingFinished: updateConfig("currentSymbol", text)
-        }
+    ConfigSwitch {
+        text: "Меню при правом клике"
+        checked: cfg.enableRightClick
+        onCheckedChanged: cfg.enableRightClick = checked
     }
 }

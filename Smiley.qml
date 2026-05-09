@@ -9,24 +9,23 @@ import qs.modules.common.widgets
 
 Item {
     id: root
-    implicitWidth: (getConfig().duplicateOnMonitors ?? true) || (root.QsWindow.screen.name === "eDP-1") ? label.implicitWidth + 20 : 0
-    visible: (getConfig().duplicateOnMonitors ?? true) || (root.QsWindow.screen.name === "eDP-1")
+    implicitWidth: cfg.duplicateOnMonitors || (root.QsWindow.screen.name === "eDP-1") ? label.implicitWidth + 20 : 0
+    visible: cfg.duplicateOnMonitors || (root.QsWindow.screen.name === "eDP-1")
     implicitHeight: 40
 
     FileView {
-        id: cfg
+        id: cfgFile
         path: Directories.state + "/user/smiley-bar-widget/config.json"
         watchChanges: true
-    }
-
-    function getConfig() {
-        return JSON.parse(cfg.text || "{}");
-    }
-
-    function updateConfig(key, value) {
-        const c = getConfig();
-        c[key] = value;
-        cfg.setText(JSON.stringify(c, null, 2));
+        onFileChanged: reload()
+        
+        JsonAdapter {
+            id: cfg
+            property string currentSymbol: ":)"
+            property bool duplicateOnMonitors: true
+            property bool enableLeftClick: true
+            property bool enableRightClick: true
+        }
     }
 
     property var emojis: [
@@ -42,22 +41,10 @@ Item {
         "", "", "", "", "", "", "", "", "󰈺", ""
     ]
 
-    property string currentSymbol: getConfig().currentSymbol ?? ":)"
-    
-    Connections {
-        target: cfg
-        function onTextChanged() {
-            const config = getConfig();
-            if (config.duplicateOnMonitors ?? true) {
-                root.currentSymbol = config.currentSymbol ?? ":)";
-            }
-        }
-    }
-
     StyledText {
         id: label
         anchors.centerIn: parent
-        text: root.currentSymbol
+        text: cfg.currentSymbol
         font.pixelSize: Appearance.font.pixelSize.normal
         color: Appearance.colors.colOnSurface
     }
@@ -70,19 +57,15 @@ Item {
         z: 999
 
         onClicked: (mouse) => {
-            const config = getConfig();
             if (mouse.button === Qt.RightButton) {
-                if (config.enableRightClick ?? true) {
+                if (cfg.enableRightClick) {
                     pickerMenu.visible = !pickerMenu.visible
                 }
             } else {
-                if (config.enableLeftClick ?? true) {
+                if (cfg.enableLeftClick) {
                     const next = root.emojis[Math.floor(Math.random() * root.emojis.length)];
-                    if (config.duplicateOnMonitors ?? true) {
-                        updateConfig("currentSymbol", next);
-                    } else {
-                        root.currentSymbol = next;
-                    }
+                    cfg.currentSymbol = next;
+                    cfgFile.writeAdapter();
                 }
             }
         }
@@ -205,11 +188,8 @@ Item {
             }
 
             onClicked: {
-                if (getConfig().duplicateOnMonitors ?? true) {
-                    updateConfig("currentSymbol", modelData);
-                } else {
-                    root.currentSymbol = modelData;
-                }
+                cfg.currentSymbol = modelData;
+                cfgFile.writeAdapter();
                 pickerMenu.visible = false
             }
         }
